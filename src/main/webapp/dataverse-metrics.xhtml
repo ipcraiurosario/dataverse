@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <h:head>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/dataverse_template.xhtml">
+            <ui:param name="pageTitle" value="#{empty DataversePage.dataverse.name ? bundle.new : DataversePage.dataverse.name}"/>
+            <ui:param name="dataverse" value="#{DataversePage.dataverse}"/>
+            <ui:define name="body">
+                <f:metadata>
+                    <f:viewParam name="id" value="#{DataversePage.dataverse.id}"/>
+					<f:viewParam name="dataverseId" value="#{DataversePage.dataverseId}"/>
+                    <!-- <f:viewParam name="dataverseId" value="#{DataversePage.id}"/> -->
+                    <!-- <f:viewParam name="alias" value="#{DataversePage.dataverse.alias}"/> -->
+                    <f:viewParam name="alias" value="#{DataversePage.alias}"/>
+                    <f:viewParam name="ownerId" value="#{DataversePage.ownerId}"/>
+                    <f:viewParam name="editMode" value="#{DataversePage.editMode}"/>
+                    <f:viewAction action="#{DataversePage.init}"/>
+                    <f:viewAction action="#{dataverseHeaderFragment.initBreadcrumbs(DataversePage.dataverse)}"/>
+                    <f:viewParam name="alias" value="#{SearchIncludeFragment.dataverseAlias}"/>
+                </f:metadata>
+				
+                <h:form id="dataverseForm">
+				
+					
+					<!-- <h2 style="margin: 15px;">#{DataversePage.name} - #{bundle['metrics.pageTitle']}</h2> -->
+					<h2 style="margin: 15px;">#{DataversePage.dataverse.name} - #{bundle['metrics.pageTitle']}</h2>
+					
+					<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-col-5">
+								<h:outputText value="&#160;" />
+							</div>
+							<div class="ui-grid-col-7">
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-col-12">
+										<h4>
+										#{bundle['metrics.from']}
+										<i> 
+										<!-- <h:outputText value="#{DataversePage.dataverse.dateStart}" > -->
+										<h:outputText value="#{DataversePage.dateStart}" >
+											<f:convertDateTime pattern="yyyy-MM-dd" />
+										</h:outputText>
+										</i> 
+										<h:outputText value="&#160;" /> #{bundle['metrics.to']}
+										<i> 										
+										<!-- <h:outputText value="#{DataversePage.dataverse.dateEnd}" > -->
+										<h:outputText value="#{DataversePage.dateEnd}" >
+											<f:convertDateTime pattern="yyyy-MM-dd" />
+										</h:outputText>
+										</i> 
+										</h4>
+									</div>
+								</div>
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-col-5">
+										<p:outputLabel for="startDate" value="#{bundle['metrics.startDate']}" />
+										<p:calendar id="startDate" pattern="yyyy-MM-dd" mask="true" value="#{DataversePage.dateStart}" />
+									</div>
+									<div class="ui-grid-col-5">
+										<p:outputLabel for="endDate" value="#{bundle['metrics.endDate']}" />
+										<p:calendar id="endDate" pattern="yyyy-MM-dd" mask="true" value="#{DataversePage.dateEnd}"/>
+									</div>
+									<div class="ui-grid-col-1">
+										<p:commandButton value="#{bundle['metrics.refresh']}" process="@form" update="@form" action="#{DataversePage.updateMetrics}" />
+									</div>
+								</div>
+							</div>	
+					</div>
+					
+					
+					<script src="https://www.gstatic.com/charts/loader.js"></script>  
+						<script type="text/javascript">
+						  google.charts.load('current', {
+							'packages':['geochart'],
+							// See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+							'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+						  });
+						  google.charts.load('current', {'packages':['corechart']});
+						  
+						  google.charts.setOnLoadCallback(drawRegionsMap);
+						  function drawRegionsMap() {
+							var data = google.visualization.arrayToDataTable([
+							  <h:outputText value="#{DataversePage.getSubjects()}" escape="false"/>
+							]);
+
+							var options = {
+							  title : "#{bundle['metrics.subjectMetrics']}",
+							  legend: 'bottom',
+							  vAxis: {title: "#{bundle['metrics.total']}"},
+							  hAxis: {title: "#{bundle['metrics.subject']}"},
+							  seriesType: 'bars',
+							  series: {2: {type: 'line'}}
+							};
+
+							var chart = new google.visualization.ComboChart(document.getElementById('subject_metrics'));
+							console.log(data);
+							chart.draw(data, options);
+						  }
+						  google.charts.setOnLoadCallback(drawNewDatasets);
+						  function drawNewDatasets() {
+							var data = google.visualization.arrayToDataTable([
+							  <h:outputText value="#{DataversePage.getNewDatasets()}" escape="false"/>
+							]);
+
+							var options = {
+							  title : "#{bundle['metrics.newDatasets']}",
+							  legend: 'bottom',
+							  vAxis: {title: "#{bundle['metrics.ndTotal']}"},
+							  hAxis: {title: "#{bundle['metrics.ndDate']}"},
+							  seriesType: 'bars',
+							  series: {2: {type: 'line'}}
+							};
+
+							var chart = new google.visualization.ComboChart(document.getElementById('datasets_metrics'));
+
+							chart.draw(data, options);
+						  }
+						</script>
+						
+						<br/>
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-col-6">
+								<h3>#{bundle["metrics.viewsDownloads"]}</h3>
+								<div id="subject_metrics" style="width: 95%; min-height: 450px;"></div>
+							</div>
+							<div class="ui-grid-col-1">
+								<h:outputText value="&#160;" />
+							</div>
+							<div class="ui-grid-col-5">
+							
+									<br/><br/><br/>
+									<p:dataTable id="tbl" var="subject" value="#{DataversePage.getListSubjects()}"
+												 paginatorTemplate="{CurrentPageReport}  {PreviousPageLink} {PageLinks} {NextPageLink}  {Exporters}"
+												 paginator="true" rows="5" style="margin-bottom:20px"
+												 paginatorPosition="bottom" >
+								 
+										<f:facet name="{Exporters}">
+											<h:commandLink>
+												<p:graphicImage url="/logos/csv.png" width="32"/>
+												<p:dataExporter type="csv" target="tbl" fileName="subject"/>
+											</h:commandLink>
+										</f:facet>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="#{bundle['metrics.subject']}" />
+											</f:facet>
+											<h:outputText value="#{subject.name}" />
+										</p:column>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="#{bundle['metrics.views']}"/>
+											</f:facet>
+											<h:outputText value="#{subject.views}" />
+										</p:column>
+										
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="#{bundle['metrics.tableDownloads']}"/>
+											</f:facet>
+											<h:outputText value="#{subject.downloads}" />
+										</p:column>
+									</p:dataTable>
+									
+									
+							</div>
+						</div>
+						<br/>
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-col-6">
+								<h3>#{bundle['metrics.addedOverTime']}</h3>
+								<div id="datasets_metrics" style="width: 95%; min-height: 450px;"></div>
+							</div>
+							<div class="ui-grid-col-1">
+								<h:outputText value="&#160;" />
+							</div>
+							<div class="ui-grid-col-5">
+							
+									<br/><br/><br/>
+									<p:dataTable id="tbdatasets" var="datasets" value="#{DataversePage.getListNewDatasets()}"
+												 paginatorTemplate="{CurrentPageReport}  {PreviousPageLink} {PageLinks} {NextPageLink}  {Exporters}"
+												 paginator="true" rows="5" style="margin-bottom:20px"
+												 paginatorPosition="bottom" >
+								 
+										<f:facet name="{Exporters}">
+											<h:commandLink>
+												<p:graphicImage url="/logos/csv.png" width="32"/>
+												<p:dataExporter type="csv" target="tbdatasets" fileName="new_datasets"/>
+											</h:commandLink>
+										</f:facet>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="#{bundle['metrics.ndDate']}" />
+											</f:facet>
+											<h:outputText value="#{datasets.name}" />
+										</p:column>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="${bundle['metrics.ndTotal']}"/>
+											</f:facet>
+											<h:outputText value="#{datasets.views}" />
+										</p:column>
+									</p:dataTable>
+									
+									
+							</div>
+						</div>
+						
+						<br/>
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-col-8">
+								<h3>${bundle['metrics.top10']}</h3>
+								<br/>
+									<p:dataTable id="tbfiles" var="datafile" value="#{DataversePage.getListFilesMostDownloaded()}"
+												 paginatorTemplate="{CurrentPageReport}  {PreviousPageLink} {PageLinks} {NextPageLink}  {Exporters}"
+												 paginator="true" rows="10" style="margin-bottom:20px"
+												 paginatorPosition="bottom" >
+								 
+										<f:facet name="{Exporters}">
+											<h:commandLink>
+												<p:graphicImage url="/logos/csv.png" width="32"/>
+												<p:dataExporter type="csv" target="tbfiles" fileName="datafile_downloaded"/>
+											</h:commandLink>
+										</f:facet>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="${bundle['metrics.top10File']}" />
+											</f:facet>
+											<h:outputText value="#{datafile.name}" />
+										</p:column>
+										
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="${bundle['metrics.top10Dataset']}" />
+											</f:facet>
+											<p:link outcome="#{datafile.other}" value="${bundle['metrics.top10View']}"/>
+											
+										</p:column>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="${bundle['metrics.top10Total']}"/>
+											</f:facet>
+											<h:outputText value="#{datafile.views}" />
+										</p:column>
+									</p:dataTable>
+									
+							</div>
+							<div class="ui-grid-col-1">
+								<h:outputText value="&#160;" />
+							</div>
+							<div class="ui-grid-col-5">
+							
+									
+									
+							</div>
+						</div>
+						
+						<br/>
+						<br/>
+						<br/>
+				
+                </h:form>    
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,174 @@
+package edu.harvard.iq.dataverse.orcid;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class OrcidData {
+    private static final Logger logger = Logger.getLogger(OrcidData.class.getCanonicalName());
+    public final String ORCID_URL = "https://pub.orcid.org/v2.1/";
+
+    /*
+     * WARNING - Removed try catching itself - possible behaviour change.
+     */
+    public String getURL(String uri) {
+        InputStreamReader reader = null;
+        try {
+            int read;
+            URL url = new URL(uri);
+            URLConnection uc = url.openConnection();
+            uc.setRequestProperty("Accept", "application/json");
+            reader = new InputStreamReader(uc.getInputStream());
+            StringBuffer buffer = new StringBuffer();
+            char[] chars = new char[1024];
+            while ((read = reader.read(chars)) != -1) {
+                buffer.append(chars, 0, read);
+            }
+            String string = buffer.toString();
+            return string;
+        }
+        catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getName(String orcid) {
+        try {
+            String json = this.getURL("https://pub.orcid.org/v2.1/" + orcid + "/person");
+            JsonParser parser = new JsonParser();
+            JsonElement jsonTree = parser.parse(json);
+            JsonObject jsonObject = jsonTree.getAsJsonObject();
+            JsonElement name = jsonObject.get("name");
+            JsonObject name_ = name.getAsJsonObject();
+            JsonElement giveNames = name_.get("given-names");
+            JsonElement familyName = name_.get("family-name");
+            if (giveNames != null && familyName != null) {
+                return giveNames.getAsJsonObject().get("value").getAsString() + " " + familyName.getAsJsonObject().get("value").getAsString();
+            }
+            if (giveNames == null && familyName != null) {
+                return familyName.getAsJsonObject().get("value").getAsString();
+            }
+            if (giveNames != null && familyName == null) {
+                return giveNames.getAsJsonObject().get("value").getAsString();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public List<String> getOtherName(String orcid) {
+        LinkedList<String> otherNames = new LinkedList<String>();
+        try {
+            String json = this.getURL("https://pub.orcid.org/v2.1/" + orcid + "/other-names");
+            JsonParser parser = new JsonParser();
+            JsonElement jsonTree = parser.parse(json);
+            JsonObject jsonObject = jsonTree.getAsJsonObject();
+            JsonArray arr = jsonObject.getAsJsonArray("other-name");
+            for (JsonObject nodo : arr) {
+                JsonElement content = nodo.get("content");
+                logger.log(Level.WARNING, "\t\t::::::....." + content.getAsString());
+                otherNames.add(content.getAsString());
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return otherNames;
+    }
+
+    public Map<String, String> getExternalIdentifier(String orcid) {
+        LinkedHashMap<String, String> otherIdentifiers = new LinkedHashMap<String, String>();
+        try {
+            String json = this.getURL("https://pub.orcid.org/v2.1/" + orcid + "/external-identifiers");
+            JsonParser parser = new JsonParser();
+            JsonElement jsonTree = parser.parse(json);
+            JsonObject jsonObject = jsonTree.getAsJsonObject();
+            JsonArray arr = jsonObject.getAsJsonArray("external-identifier");
+            for (JsonObject nodo : arr) {
+                JsonElement externalIdType = nodo.get("external-id-type");
+                System.out.println(externalIdType.getAsString());
+                JsonElement externalIdUrl = nodo.get("external-id-url");
+                System.out.println(externalIdUrl.getAsJsonObject().get("value").getAsString());
+                logger.log(Level.WARNING, "\t\t::::::....." + externalIdType.getAsString() + "......::::::" + externalIdUrl.getAsJsonObject().get("value").getAsString());
+                otherIdentifiers.put(externalIdType.getAsString(), externalIdUrl.getAsJsonObject().get("value").getAsString());
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return otherIdentifiers;
+    }
+
+    public Map<String, String> getResearcherUrls(String orcid) {
+        LinkedHashMap<String, String> urls = new LinkedHashMap<String, String>();
+        try {
+            String json = this.getURL("https://pub.orcid.org/v2.1/" + orcid + "/researcher-urls");
+            JsonParser parser = new JsonParser();
+            JsonElement jsonTree = parser.parse(json);
+            JsonObject jsonObject = jsonTree.getAsJsonObject();
+            JsonArray arr = jsonObject.getAsJsonArray("researcher-url");
+            for (JsonObject nodo : arr) {
+                JsonElement urlName = nodo.get("url-name");
+                JsonElement url = nodo.get("url");
+                urls.put(urlName.getAsString(), url.getAsJsonObject().get("value").getAsString());
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return urls;
+    }
+
+    public String getEmployment(String orcid) {
+        try {
+            String json = this.getURL("https://pub.orcid.org/v2.1/" + orcid + "/employments");
+            JsonParser parser = new JsonParser();
+            JsonElement jsonTree = parser.parse(json);
+            JsonObject jsonObject = jsonTree.getAsJsonObject();
+            JsonArray arr = jsonObject.getAsJsonArray("employment-summary");
+            Iterator l = arr.iterator();
+            if (l.hasNext()) {
+                JsonObject nodo = (JsonObject)l.next();
+                JsonElement departmentName = nodo.get("department-name");
+                JsonElement roleTitle = nodo.get("role-title");
+                JsonElement organization = nodo.get("organization");
+                return (roleTitle != null ? new StringBuilder().append(roleTitle.getAsString()).append(", ").toString() : "") + (departmentName != null ? new StringBuilder().append(departmentName.getAsString()).append(", ").toString() : "") + (organization != null && organization.getAsJsonObject().get("name") != null ? organization.getAsJsonObject().get("name").getAsString() : "");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+}

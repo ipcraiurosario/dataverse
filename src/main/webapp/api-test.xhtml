@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:o="http://omnifaces.org/ui">
+
+    <h:head>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/dataverse_template.xhtml">
+            <ui:define name="body">
+                <script>
+                window.onpageshow = function(event) {
+                    if (event.persisted) {
+                        window.location.reload();
+                    }
+                };
+                </script>
+                <f:loadBundle basename="Bundle" var="bundle"/>
+                <f:metadata>
+                    <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}"/>
+                    <f:viewParam name="editMode" value="#{DataverseUserPage.editMode}"/>
+                    <f:viewParam name="redirectPage" value="#{DataverseUserPage.redirectPage}"/>
+                    <f:viewParam name="selectTab" value="#{DataverseUserPage.selectTab}"/>
+                </f:metadata>
+	<style>
+	h5{
+ 	  font-size:16px;
+	}
+	
+	.justify{
+	  text-align:justify;
+	  font-family:"Helvetica Neue",Helvetica,Arial;
+ 	}
+	.group{
+	  text-align:center;
+	  padding:1em;
+	}
+
+	.group-desc{
+	    max-width: 400px;
+	    margin: auto;
+	    background-color: #b3e4f047;
+	    border-radius: 10px;
+	    padding: 1em;
+	}
+
+	.group-correo{
+	    border-bottom: 1px #e8f5f9 solid;
+	    max-width: 400px;
+	    margin: auto;
+	    border-left: 1px #e8f5f9 solid;
+	    border-right: 1px #e8f5f9 solid;
+	}
+	.titulo-principal{
+    text-align: justify;
+    border: 1px solid #1a3260;
+    padding: 10px;
+    color: white;
+    background: #4590b8;
+	}
+
+	.resumen-principal{
+	text-align: justify;
+    padding: 10px;
+    background: #a2c7db;
+    border-radius: 10px;
+	}
+	.resumen-secundario{
+	padding:10px;
+	border-radius:10px;
+	border: 1px #4590b8 solid;	
+	}
+	.resumen-dataverse{
+	color:#4590b8;
+	}
+	.lista-principal{
+	display:flex;
+	box-shadow: unset;
+	}
+	.item-principal{
+	margin-left:5%;
+        color: white;
+        background: #1a3260;
+        border-radius: 10px !important;
+	}
+	.dudas-box{
+	    background: rgba(147, 157, 166, 1);
+    border-radius: 10px;
+    padding: 10px;
+	color:white;
+	}
+	div.justify{
+	  font-family: "Segoe UI";
+	  font-weight: 500;
+	}
+	.correo{
+	  text-decoration:none;
+	  cursor:pointer;
+	}
+	.correo:hover{
+	  text-decoration:none;
+	  color:white;
+	}
+	</style>
+	<div class="justify">
+		<h3 class="titulo-principal"><strong>Metrics</strong></h3>
+		
+		<div class="dudas-box">
+			<h2 class="titulo-principal">Total</h2>
+			<script>
+				// METRICS
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/dataverses", function(data, status){
+					console.log("Dataverses");
+    				console.log(data);
+  				});
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/datasets", function(data, status){
+					console.log("Datasets");
+    				console.log(data);
+  				});
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/files", function(data, status){
+					console.log("files");
+    				console.log(data);
+  				});
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/downloads", function(data, status){
+					console.log("downloads");
+    				console.log(data);
+  				});
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/datasets/toMonth/2020-04", function(data, status){
+					console.log("Datasets toMonth");
+    				console.log(data);
+  				});
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/datasets/pastDays/120", function(data, status){
+					console.log("Datasets pastDays");
+    				console.log(data);
+  				});
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/dataverses/bySubject", function(data, status){
+					console.log("dataverses bySubject");
+    				console.log(data);
+  				});
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/dataverses/byCategory", function(data, status){
+					console.log("dataverses byCategory");
+    				console.log(data);
+  				});
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/datasets/bySubject", function(data, status){
+					console.log("datasets bySubject");
+    				console.log(data);
+  				});
+				$.get("http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/info/metrics/datasets/bySubject/toMonth/2020-04", function(data, status){
+					console.log("datasets bySubject toMonth");
+    				console.log(data);
+  				});
+
+				$.get('http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/search?q=subject_ss:"Engineering"&type=dataverse', function(data, status){
+					console.log("datasets bySubject toMonth");
+    				console.log(data);
+  				});
+				$.get('http://ec2-52-91-47-172.compute-1.amazonaws.com:8080/api/search?q=subject_ss:"Social+Sciences"&type=dataverse', function(data, status){
+					console.log("datasets bySubject toMonth");
+    				console.log(data);
+  				});
+
+			</script>
+		</div>
+
+	</div>
+    </ui:define>
+</ui:composition>
+	
+</h:body>
+</html>

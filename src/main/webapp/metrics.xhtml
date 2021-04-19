@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:pt="http://java.sun.com/jsf/passthrough"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:o="http://omnifaces.org/ui">
+    <h:head>
+    </h:head>
+    <h:body>
+        <ui:composition template="/dataverse_template.xhtml">
+            <ui:param name="pageTitle" value="#{DatasetPage.editMode == 'CREATE' ? bundle['dataset.pageTitle'] : DatasetPage.workingVersion.title} - #{DatasetPage.dataset.owner.name}"/>
+            <ui:param name="dataverse" value="#{DatasetPage.dataset.owner}"/>
+            <ui:param name="dataset" value="#{DatasetPage.dataset}"/>
+            <ui:param name="version" value="#{DatasetPage.workingVersion}"/>
+            <ui:param name="locked" value="#{DatasetPage.locked}"/>
+            <ui:param name="showMessagePanel" value="#{true}"/>
+            <ui:param name="showPublishLink" value="#{DatasetPage.workingVersion == DatasetPage.dataset.latestVersion 
+                                                      and DatasetPage.dataset.latestVersion.versionState=='DRAFT'
+                                                      and permissionsWrapper.canIssuePublishDatasetCommand(DatasetPage.dataset)}"/>
+
+            <ui:param name="showSubmitForReviewLink" value="#{DatasetPage.editMode != 'CREATE' and DatasetPage.workingVersion == DatasetPage.dataset.latestVersion
+                                                              and !DatasetPage.datasetLockedInWorkflow
+                                                              and DatasetPage.dataset.latestVersion.versionState=='DRAFT'
+                                                              and DatasetPage.canUpdateDataset()
+                                                              and !permissionsWrapper.canIssuePublishDatasetCommand(DatasetPage.dataset)}"/>
+            <ui:param name="showReturnToAuthorLink" value="#{DatasetPage.dataset.latestVersion.versionState=='DRAFT' and DatasetPage.dataset.latestVersion.inReview
+                                                             and permissionsWrapper.canIssuePublishDatasetCommand(DatasetPage.dataset)}"/>
+            <ui:param name="showAccessDatasetButtonGroup" value="#{DatasetPage.canDownloadFiles()
+                                                                   and (!DatasetPage.workingVersion.deaccessioned
+                                                                   or (DatasetPage.workingVersion.deaccessioned and DatasetPage.canUpdateDataset()))}"/>
+            <!-- TO-DO FIX RSYNC LOGIC !fileMetadata.dataFile.filePackage or
+                                                    fileMetadata.dataFile.filePackage and systemConfig.HTTPDownload -->
+            <ui:param name="showAccessFileButtonGroup" value="#{fileDownloadHelper.canDownloadFile(fileMetadata)
+                                                                or (!fileDownloadHelper.canDownloadFile(fileMetadata) and DatasetPage.dataset.fileAccessRequest)
+                                                                and (!DatasetPage.workingVersion.deaccessioned
+                                                                or (DatasetPage.workingVersion.deaccessioned and permissionsWrapper.canIssueUpdateDatasetCommand(FilePage.fileMetadata.datasetVersion.dataset)))}"/>
+            <ui:param name="publishDataset" value="#{DatasetPage.publishDatasetPopup()}"/>
+            <ui:param name="releaseDraft" value="#{DatasetPage.releaseDraftPopup()}"/>
+            <ui:param name="releaseBoth" value="#{DatasetPage.publishBothPopup()}"/>
+            <ui:define name="meta_header">
+                <meta name="description" content="#{DatasetPage.description}"/>
+            </ui:define>
+            <ui:define name="dc_meta_header">
+                <meta name="DC.identifier" content="#{DatasetPage.persistentId}"/>
+                <meta name="DC.type" content="Dataset"/>
+                <meta name="DC.title" content="#{DatasetPage.title}"/>
+                <meta name="DC.date" content="#{DatasetPage.workingVersion.publicationDateAsString}"/>
+                <meta name="DC.publisher" content="#{DatasetPage.publisher}" />
+                <meta name="DC.description" content="#{DatasetPage.description}" />
+                <ui:repeat var="author" value="#{DatasetPage.datasetAuthors}">
+                    <meta name="DC.creator" content="#{author}"/>
+                </ui:repeat>
+                <ui:repeat var="subject" value="#{DatasetPage.workingVersion.datasetSubjects}">
+                    <meta name="DC.subject" content="#{subject}"/>
+                </ui:repeat>
+            </ui:define>
+            <ui:define name="jsonld_header">
+                <script type="application/ld+json">
+                    <h:outputText value="#{DatasetPage.jsonLd}"/>
+                </script>
+            </ui:define>
+            <ui:define name="og_header">
+                <meta property="og:title" content="#{DatasetPage.title}" />
+                <meta property="og:type" content="article" />
+                <meta property="og:url" content="#{DatasetPage.dataverseSiteUrl}/dataset.xhtml?persistentId=#{dataset.globalId}" />
+                <meta property="og:image" content="#{DatasetPage.dataverseSiteUrl.concat(resource['images/dataverse-icon-1200.png'])}" />
+                <meta property="og:site_name" content="#{DatasetPage.publisher}" />
+                <meta property="og:description" content="#{(DatasetPage.description.length()>150 ? DatasetPage.description.substring(0,147).concat('...') : DatasetPage.description)}" />
+                <ui:repeat var="author" value="#{DatasetPage.datasetAuthors}">
+                    <meta property="article:author" content="#{author}" />
+                </ui:repeat>
+                <meta property="article:published_time" content="#{DatasetPage.workingVersion.publicationDateAsString}" />
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

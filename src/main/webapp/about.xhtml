@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:o="http://omnifaces.org/ui">
+
+    <h:head>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/dataverse_template.xhtml">
+            <ui:define name="body">
+                <script>
+                window.onpageshow = function(event) {
+                    if (event.persisted) {
+                        window.location.reload();
+                    }
+                };
+                </script>
+                <!-- <f:loadBundle basename="Bundle" var="bundle"/> -->
+                <f:metadata>
+                    <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}"/>
+                    <f:viewParam name="editMode" value="#{DataverseUserPage.editMode}"/>
+                    <f:viewParam name="redirectPage" value="#{DataverseUserPage.redirectPage}"/>
+                    <f:viewParam name="selectTab" value="#{DataverseUserPage.selectTab}"/>
+                </f:metadata>
+	<style>
+	h5{
+ 	  font-size:16px;
+	}
+	
+	.justify{
+	  text-align:justify;
+	  font-family:"Helvetica Neue",Helvetica,Arial;
+ 	}
+	.group{
+	  text-align:center;
+	  padding:1em;
+	}
+
+	.group-desc{
+	    max-width: 400px;
+	    margin: auto;
+	    background-color: #b3e4f047;
+	    border-radius: 10px;
+	    padding: 1em;
+	}
+
+	.group-correo{
+	    border-bottom: 1px #e8f5f9 solid;
+	    max-width: 400px;
+	    margin: auto;
+	    border-left: 1px #e8f5f9 solid;
+	    border-right: 1px #e8f5f9 solid;
+	}
+	.titulo-principal{
+    text-align: justify;
+    border: 1px solid #1a3260;
+    padding: 10px;
+    color: white;
+    background: #4590b8;
+	}
+
+	.resumen-principal{
+	text-align: justify;
+    padding: 10px;
+    background: #a2c7db;
+    border-radius: 10px;
+	}
+	.resumen-secundario{
+	padding:10px;
+	border-radius:10px;
+	border: 1px #4590b8 solid;	
+	}
+	.resumen-dataverse{
+	color:#4590b8;
+	}
+	.lista-principal{
+	display:flex;
+	box-shadow: unset;
+	}
+	.item-principal{
+	margin-left:5%;
+        color: white;
+        background: #1a3260;
+        border-radius: 10px !important;
+	}
+	.dudas-box{
+	    background: rgba(147, 157, 166, 1);
+    border-radius: 10px;
+    padding: 10px;
+	color:white;
+	}
+	div.justify{
+	  font-family: "Segoe UI";
+	  font-weight: 500;
+	}
+	.correo{
+	  text-decoration:none;
+	  cursor:pointer;
+	}
+	.correo:hover{
+	  text-decoration:none;
+	  color:white;
+	}
+	</style>
+<div class="justify">
+	<h3 class="titulo-principal"><strong>Acerca del repositorio de datos de investigación</strong></h3>
+	
+	<div class="">
+        <p class="resumen-principal">El repositorio de datos de investigación es una plataforma institucional que permite el almacenamiento, la gestión, la preservación, la difusión y el uso de los datos de investigación, elaborados o recolectados por los investigadores de la<strong> Universidad del Rosario</strong>. Se rige por la política institucional para la gestión de datos de investigación (<a href="https://repository.urosario.edu.co/handle/10336/19340" target="_blank">Decreto Rectoral No. 1576</a>)</p>
+        
+
+<p class="resumen-secundario">La plataforma utiliza el software <strong class="resumen-dataverse"> <a href="https://dataverse.org/" target="_blank">Dataverse</a></strong>, una aplicación de código abierto desarrollada por la Universidad de Harvard que permite alojar datos de todas las disciplinas en todo tipo de formatos como documentos estándar de Office, imágenes, datos audiovisuales, formatos de datos científicos y estadísticas, datos primarios, texto plano, texto estructurado, datos georreferenciados y código fuente. Ofrece la posibilidad de publicar los datos de investigación asignando identificadores persistentes (DOI) que contribuyen a fortalecer la visibilidad web y recibir crédito académico. Para conocer más acerca del funcionamiento de la plataforma puede consultar <a href="http://guides.dataverse.org/en/4.9.4/user/" target="_blank"> la guía de usuario.</a>
+</p>
+
+   	</div>
+
+	<div class="dudas-box">
+Para resolver cualquier duda relacionada con el repositorio de datos de investigación, puede comunicarse al correo electrónico: <strong><a class="correo" href="mailto:researchdata@urosario.edu.co">researchdata@urosario.edu.co</a></strong>
+	</div>
+	    <br/>
+</div>
+    </ui:define>
+</ui:composition>
+	
+</h:body>
+</html>

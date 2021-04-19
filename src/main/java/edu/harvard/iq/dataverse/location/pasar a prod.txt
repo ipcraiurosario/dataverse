@@ -1,0 +1,28 @@
+Autores
+psql -U postgres -d edocurdb60 -f "2.sql" > 2-test.txt
+psql -U postgres -d edocurdb60 -f "2-2.sql" > 2-2-test.txt
+
+psql -U postgres -d edocurdb60 -f "advisor.sql" > advisor-test.txt
+psql -U postgres -d edocurdb60 -f "advisor-2.sql" > advisor-2-test.txt
+
+psql -U postgres -d edocurdb60 -f "autors.sql" > autors-test.txt
+psql -U postgres -d edocurdb60 -f "autors-2.sql" > autors-2-test.txt
+
+autores-corporativos
+psql -U postgres -d edocurdb60 -f "318.sql" > 318-test.txt
+
+citations
+psql -U postgres -d edocurdb60 -f "312.sql" > 312-test.txt
+psql -U postgres -d edocurdb60 -f "313.sql" > 313-test.txt
+psql -U postgres -d edocurdb60 -f "314.sql" > 314-test.txt
+psql -U postgres -d edocurdb60 -f "315.sql" > 315-test.txt
+psql -U postgres -d edocurdb60 -f "316.sql" > 316-test.txt
+
+Resumenes
+psql -U postgres -d edocurdb60 -f "reemplazar.sql" > reemplazar-test.txt
+psql -U postgres -d edocurdb60 -f "reasignar.sql" > reasignar-test.txt
+psql -U postgres -d edocurdb60 -f "mover.sql" > mover-test.txt
+psql -U postgres -d edocurdb60 -f "eliminar.sql" > eliminar-test.txt
+psql -U postgres -d edocurdb60 -f "correccion.sql" > correccion-test.txt
+psql -U postgres -d edocurdb60 -f "26-27.sql" > 26-27-test.txt
+

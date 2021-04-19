@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:pt="http://java.sun.com/jsf/passthrough"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:iqbs="http://xmlns.jcp.org/jsf/composite/iqbs">
+    <h:head>
+    </h:head>
+    <h:body>
+        <ui:composition template="/dataverse_template.xhtml">
+            <ui:param name="pageTitle" value="Metrics - #{DatasetPage.title}"/>
+            <ui:param name="dataverse" value="#{DatasetPage.dataset.owner}"/>
+            <ui:param name="dataset" value="#{DatasetPage.dataset}"/>
+	    <ui:param name="showMessagePanel" value="#{true}"/>
+	    <ui:define name="dc_meta_header">
+			<meta name="DC.identifier" content="#{DatasetPage.persistentId}"/>
+			<meta name="DC.type" content="Dataset"/>
+			<meta name="DC.title" content="#{DatasetPage.title}"/>
+	    </ui:define>
+            <ui:define name="body">
+                <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
+                <f:metadata>
+                    <f:viewParam name="id" value="#{DatasetPage.dataset.id}"/>
+                    <f:viewAction action="#{DatasetPage.init}" rendered="true"/>
+                    <f:viewAction action="#{dataverseHeaderFragment.initBreadcrumbs(DatasetPage.dataset)}"/>
+                </f:metadata>
+				<h:form id="datasetForm">
+						
+					
+						
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-col-4">
+								<br/>
+								<h3 style="margin-top: 0">#{DatasetPage.title}</h3>
+							</div>
+						</div>
+						<br/>
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-col-3">
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-col-6">
+										<h4>Views:</h4> #{DatasetPage.getCountViews()}
+									</div>
+									<div class="ui-grid-col-6">
+										<h4>Downloads:</h4> #{DatasetPage.getCountDownloads()}
+									</div>
+								</div>	
+							</div>		
+							<div class="ui-grid-col-2">
+								<h:outputText value="&#160;" />
+							</div>
+							<div class="ui-grid-col-7">
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-col-12">
+										<h4>
+										Metrics from 
+										<i> 
+										<h:outputText value="#{DatasetPage.dateStart}" >
+											<f:convertDateTime pattern="yyyy-MM-dd" />
+										</h:outputText>
+										</i> 
+										<h:outputText value="&#160;" /> to
+										<i> 										
+										<h:outputText value="#{DatasetPage.dateEnd}" >
+											<f:convertDateTime pattern="yyyy-MM-dd" />
+										</h:outputText>
+										</i> 
+										</h4>
+									</div>
+								</div>
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-col-5">
+										<p:outputLabel for="startDate" value="Start date:" />
+										<p:calendar id="startDate" pattern="yyyy-MM-dd" mask="true" value="#{DatasetPage.dateStart}" />
+									</div>
+									<div class="ui-grid-col-5">
+										<p:outputLabel for="endDate" value="End date:" />
+										<p:calendar id="endDate" pattern="yyyy-MM-dd" mask="true" value="#{DatasetPage.dateEnd}"/>
+									</div>
+									<div class="ui-grid-col-1">
+										<p:commandButton value="Refresh" process="@form" update="@form" action="#{DatasetPage.updateMetrics}" />
+									</div>
+								</div>
+							</div>	
+						</div>
+						
+						<script src="https://www.gstatic.com/charts/loader.js"></script>  
+						<script type="text/javascript">
+						  google.charts.load('current', {
+							'packages':['geochart'],
+							// See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+							'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+						  });
+						  
+						  google.charts.setOnLoadCallback(drawRegionsMap);
+						  function drawRegionsMap() {
+							var data = google.visualization.arrayToDataTable([
+							  <h:outputText value="#{DatasetPage.getCountry()}" escape="false"/>
+							]);
+
+							var options = {
+								title: 'Country Metrics',
+								hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}
+							};
+
+							var chart = new google.visualization.GeoChart(document.getElementById('country_metrics'));
+
+							chart.draw(data, options);
+						  }
+						  
+						  google.charts.load('current', {'packages':['corechart']});
+						  google.charts.setOnLoadCallback(drawVisualization);
+						  function drawVisualization() {
+							var data = google.visualization.arrayToDataTable([
+							  <h:outputText value="#{DatasetPage.getMonth()}" escape="false"/>
+							]);
+
+							var options = {
+							  title : 'Date Metrics',
+							  legend: 'bottom',
+							  vAxis: {title: 'Total'},
+							  hAxis: {title: 'Date'},
+							  seriesType: 'bars',
+							  series: {2: {type: 'line'}}
+							};
+
+							var chart = new google.visualization.ComboChart(document.getElementById('date_metrics'));
+
+							chart.draw(data, options);
+						  }
+						</script>
+						
+						<br/>
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-col-6">
+								<h3>Views / Downloads</h3>
+								<div id="country_metrics" style="width: 95%; min-height: 450px;"></div>
+							</div>
+							<div class="ui-grid-col-1">
+								<h:outputText value="&#160;" />
+							</div>
+							<div class="ui-grid-col-5">
+							
+									<br/><br/><br/>
+									<p:dataTable id="tbl" var="country" value="#{DatasetPage.getListCountry()}"
+												 paginatorTemplate="{CurrentPageReport}  {PreviousPageLink} {PageLinks} {NextPageLink}  {Exporters}"
+												 paginator="true" rows="5" style="margin-bottom:20px"
+												 paginatorPosition="bottom" >
+								 
+										<f:facet name="{Exporters}">
+											<h:commandLink>
+												<p:graphicImage url="/logos/csv.png" width="32"/>
+												<p:dataExporter type="csv" target="tbl" fileName="country"/>
+											</h:commandLink>
+										</f:facet>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Country" />
+											</f:facet>
+											<h:outputText value="#{country.name}" />
+										</p:column>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Views"/>
+											</f:facet>
+											<h:outputText value="#{country.views}" />
+										</p:column>
+										
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Downloads"/>
+											</f:facet>
+											<h:outputText value="#{country.downloads}" />
+										</p:column>
+									</p:dataTable>
+									
+									
+							</div>
+						</div>
+						
+						<br/>
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-col-6">
+								<h3>By Date</h3>
+								<div id="date_metrics" style="width: 95%; min-height: 450px;"></div>
+							</div>
+							<div class="ui-grid-col-1">
+								<h:outputText value="&#160;" />
+							</div>
+							<div class="ui-grid-col-5">
+									<br/><br/><br/>
+									<p:dataTable id="tbDate" var="dateTable" value="#{DatasetPage.getListMonth()}"
+												 paginatorTemplate="{CurrentPageReport}  {PreviousPageLink} {PageLinks} {NextPageLink}  {Exporters}"
+												 paginator="true" rows="5" style="margin-bottom:20px"
+												 paginatorPosition="bottom" >
+								 
+										<f:facet name="{Exporters}">
+											<h:commandLink>
+												<p:graphicImage url="/logos/csv.png" width="32"/>
+												<p:dataExporter type="csv" target="tbDate" fileName="date"/>
+											</h:commandLink>
+										</f:facet>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Date" />
+											</f:facet>
+											<h:outputText value="#{dateTable.name}" />
+										</p:column>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Views"/>
+											</f:facet>
+											<h:outputText value="#{dateTable.views}" />
+										</p:column>
+										
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Downloads"/>
+											</f:facet>
+											<h:outputText value="#{dateTable.downloads}" />
+										</p:column>
+									</p:dataTable>
+									
+									
+							</div>
+						</div>
+						<br/>
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-col-6">
+								<h3>Downloaded files</h3>
+								<p:dataTable id="tbFiles" var="dateTableFiles" value="#{DatasetPage.getListFilesMostDownloaded()}"
+												 paginatorTemplate="{CurrentPageReport}  {PreviousPageLink} {PageLinks} {NextPageLink}  {Exporters}"
+												 paginator="true" rows="5" style="margin-bottom:20px"
+												 paginatorPosition="bottom" >
+								 
+										<f:facet name="{Exporters}">
+											<h:commandLink>
+												<p:graphicImage url="/logos/csv.png" width="32"/>
+												<p:dataExporter type="csv" target="tbFiles" fileName="filesDownloads"/>
+											</h:commandLink>
+										</f:facet>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="File Name" />
+											</f:facet>
+											<h:outputText value="#{dateTableFiles.name}" />
+										</p:column>
+								 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Downloads"/>
+											</f:facet>
+											<h:outputText value="#{dateTableFiles.views}" />
+										</p:column>
+
+								</p:dataTable>
+								
+							</div>		
+						</div>
+				
+				
+				</h:form>
+            </ui:define>
+			
+			
+			
+		
+        </ui:composition>
+		
+		
+		
+		
+		
+		
+    </h:body>
+</html>

@@ -1,0 +1,181 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions"
+                xmlns:iqbs="http://xmlns.jcp.org/jsf/composite/iqbs">
+
+<link rel="stylesheet" href="https://www.urosario.edu.co/App_Themes/Maestra-2018/css/footer/footer.css"></link>
+<script type="application/javascript" charset="UTF-8" src="https://cdn.agentbot.net/core/5e6f21f718ba0db46ba634fd0e7d9ba1.js"></script>
+
+    <div id="dataverseFooter" jsf:rendered="#{!widgetView and !dataverseHeaderFragment.isRootDataverseThemeDisabled(dataverse) and !empty dataverse.dataverseTheme.logoFooter}">
+      <div class="container">
+            <div class="row">
+                <div class="dataverseFooterLogo col-xs-12" style="text-align:#{!empty dataverse.dataverseTheme.logoFooterAlignment ? dataverse.dataverseTheme.logoFooterAlignment : 'center'};background:##{!empty dataverse.dataverseTheme.logoFooterBackgroundColor ? dataverse.dataverseTheme.logoFooterBackgroundColor : 'FFFFFF'};">
+                    <img src="/logos/#{dataverse.logoOwnerId}/#{dataverse.dataverseTheme.logoFooter}" alt="#{of:format1(bundle['alt.logo'], dataverse.name)}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer" class="#{widgetView ? 'widget-view' : ''}">
+	<footer style="width:90%;margin:auto;">
+	   <div class="container-fluid">
+	    <center class="row">
+ 		<a>
+                        <img src="#{resource['images/datos_rojos.png']}" style="max-width:9em; float: right; margin: auto; margin-top: -18px;"
+                                    alt="Facebook Universidad del Rosario"></img>
+                </a>
+
+		<div style="margin-left:15%">
+
+		<a href="https://repository.urosario.edu.co/handle/10336/19340" target="_blank">
+			<img onmouseout="this.src='#{resource['images/PoliticaGDI_Gris.png']}'" onmouseover="this.src='#{resource['images/PoliticaGDI_Color.png']}'"  src="#{resource['images/PoliticaGDI_Gris.png']}"
+                                    ></img>
+		</a>
+	 	 <a href="https://www.urosario.edu.co/crai/inicio/aprender-e-investigar/servicios-para-la-investigacion/" target="_blank">
+                        <img onmouseout="this.src='#{resource['images/ServiciosGDI_Gris.png']}'"  onmouseover="this.src='#{resource['images/ServiciosGDI_Color.png']}'" src="#{resource['images/ServiciosGDI_Gris.png']}"
+                                    ></img>
+                </a>
+		</div>
+	    </center>
+            <div class="row">
+                <h2 style="text-align:center">
+                    Colegio Mayor de Nuestra Señora del Rosario
+                </h2>
+		<hr></hr>
+                <!-- columna izquierda -->
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                    <div class="colIzqFooter">
+                        <p>Encuentra URosario en:</p>
+                        <div class="redes-footer">
+                            <a href="https://www.facebook.com/URosario" target="_blank">
+                                <img src="#{resource['images/fbOpt.png']}"
+                                    alt="Facebook Universidad del Rosario"></img>
+                            </a>
+                            <a href="https://twitter.com/urosario" target="_blank">
+                                <img src="#{resource['images/twOpt.png']}"
+                                    alt="Twitter Universidad del Rosario"></img>
+                            </a>
+                            <a href="https://www.youtube.com/user/Comunidadrosario" target="_blank">
+                                <img src="#{resource['images/ytOpt.png']}"
+                                    alt="Youtube Universidad el Rosario"></img>
+                            </a>
+                            <a href="https://instagram.com/urosario/" target="_blank">
+                                <img src="#{resource['images/in.png']}"></img>
+                            </a>
+                            <a href="https://www.linkedin.com/edu/school?id=11595&amp;trk=edu-cp-title" target="_blank">
+                                <img src="#{resource['images/lk.png']}"></img>
+                            </a>
+                        </div>
+                        <div class="redes2">
+                            <a href="http://www.urosario.edu.co/medios-ur/inicio/" target="_blank"><i class="fa fa-microphone"
+                                    aria-hidden="true"></i> Medios UR</a>
+                        </div>
+
+                        <a href="http://www.elempleo.com/co/sitio-empresarial/universidad-rosario?v2=true"
+                            target="_blank">
+                            <div class="trabaje">
+                                <img src="#{resource['images/job.png']}"></img>
+                                <p>
+                                    TRABAJE CON NOSOTROS
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+                <!-- fin columna izquierda -->
+
+                <!-- columna central -->
+                <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                    <div class="colCenFooter">
+
+                        <div class="datos-urosario">
+                            <a href="tel:0312970200">PBX: (031) 2970200</a>
+                            <br></br>
+                            Calle 12C Nº 6-25 - Bogotá D.C. Colombia
+                            <a href="http://www.urosario.edu.co/home/sedes-y-horarios/#verticalTab5" target="_blank">
+                                <img src="#{resource['images/maps.png']}"></img>
+                            </a>
+                            <br></br>
+                            <a href="http://www.urosario.edu.co/home/sedes-y-horarios/" target="_blank">
+                                Sedes
+                            </a> |
+                            <a href="http://www.urosario.edu.co/terminos-y-condiciones/" target="_blank">
+                                Términos de uso
+                            </a> |
+                            <!--
+                                                                  <a href="http://www.urosario.edu.co/mapa-del-sitio/" target="_blank">
+  Mapa del sitio
+  </a>  |  
+  <a href="http://www.urosario.edu.co/Periodico-Nova-Et-Vetera/Actualidad-Rosarista/Universidad-del-Rosario-se-destacada-en-reconocimi/" target="_blank">
+  Distinciones
+  </a>  |  -->
+                            <a href="http://www.urosario.edu.co/Felicitaciones-quejas-y-reclamos/inicio/" target="_blank">
+                                Oportunidades de mejora
+                            </a>
+                        </div>
+                        <div class="resolucion">
+                            Institución de educación superior sujeta a la inspección y vigilancia del Mineducación<br></br>
+                            <a href="http://www.urosario.edu.co/Home/la-universidad/Documentacion-Institucional/" target="_blank">
+                                Derechos Pecuniarios, Reglamentos y Constituciones</a> / Protección de datos:
+                            <a href="http://repository.urosario.edu.co/bitstream/handle/10336/4503/PoliticaTratamientoProteccionDatosPersonales.pdf;jsessionid=EDD41C00D1330D3A37D0C002D772B2F3?sequence=1"
+                                target="_blank">Política</a> - <a
+                                href="https://procesos.urosario.edu.co/sysurse/es/rosario/8811340335242f6cf144ff1070028716/externos.php"
+                                target="_blank">
+                                Solicitudes
+                            </a>
+                            <br></br>
+                            Personería Jurídica: Resolución 58 del 16 de septiembre de 1895 expedida por el Ministerio
+                            de Gobierno
+                        </div>
+
+                    </div>
+                </div>
+                <!-- fin columna central -->
+
+
+                <!-- columna derecha -->
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="colDerFooter">
+                        <p>Distinciones</p>
+
+                        <a href="http://www.urosario.edu.co/URosario-efr/Inicio/" target="_blank">
+                            <img class="imgEfrFooter"
+                                src="#{resource['images/efr-URosario-min2Opt.png']}"
+                                alt="Efr URosario"></img>
+                        </a>
+
+
+                        <a href="https://saces.mineducacion.gov.co/cna/Buscador/Fortalezas.php?Id=21" target="_blank"
+                            class="colDerFooterImg-2">
+                            <img class="ImgAcreditacionFooter"
+                                src="#{resource['images/acreditacionOpt.png']}"></img>
+                        </a>
+
+                        <a href="http://www.urosario.edu.co/Periodico-NovaEtVetera/Nuestra-U/URosario-logra-la-acreditacion-por-cinco-anos-con/"
+                            target="_blank">
+                            <img class="imgSealFooter" src="#{resource['images/iaseal.png']}"
+                                alt="Acreditación Seal" title="Acreditación Seal" border="0"></img>
+                        </a>
+
+                        <a href="http://www.urosario.edu.co/Periodico-Nova-Et-Vetera/Actualidad-Rosarista/Universidad-del-Rosario-se-destacada-en-reconocimi/"
+                            target="_blank">
+                            <img class="imgOverallStarsFooter"
+                                src="#{resource['images/Overall-Stars-2017-EG.png']}" alt="QS Stars"
+                                title="QS Stars" border="0"></img>
+                        </a>
+                    </div>
+                </div>
+                <!-- fin columna derecha-->
+            </div>
+        </div>
+    </footer>
+    </div>
+    <o:resourceInclude path="/CustomizationFilesServlet?customFileType=footer" rendered="#{!widgetView}"/>
+</ui:composition>
